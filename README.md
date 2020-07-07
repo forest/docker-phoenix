@@ -17,10 +17,10 @@ It's so simple: just clone/download this repository.
 
 You can specify a particular Phoenix version by targeting the corresponding release tag of this repository.
 
-For instance, for a dockerized development environment for Phoenix 1.5.1 you could run:
+For instance, for a dockerized development environment for Phoenix 1.5.3 you could run:
 
 ```
-git clone -b 1.5.1 https://github.com/forest/docker-phoenix ~/code/hello-phoenix
+git clone -b 1.5.3 https://github.com/forest/docker-phoenix ~/code/hello-phoenix
 ```
 
 ### Install Tools

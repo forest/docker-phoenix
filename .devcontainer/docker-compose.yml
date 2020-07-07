@@ -3,7 +3,6 @@ version: "3.7"
 
 services:
   app:
-    image: nicbet/phoenix:1.5.1
     build:
       context: ..
       dockerfile: Dockerfile
