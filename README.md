@@ -17,10 +17,10 @@ It's so simple: just clone/download this repository.
 
 You can specify a particular Phoenix version by targeting the corresponding release tag of this repository.
 
-For instance, for a dockerized development environment for Phoenix 1.5.3 you could run:
+For instance, for a dockerized development environment for Phoenix 1.5.4 you could run:
 
 ```
-git clone -b 1.5.3 https://github.com/forest/docker-phoenix ~/code/hello-phoenix
+git clone -b 1.5.4 https://github.com/forest/docker-phoenix ~/code/hello-phoenix
 ```
 
 ### Install Tools
@@ -66,6 +66,8 @@ mix phx.new . --app hello
 Why does this work? The `docker-compose.yml` file specifies that your local `current` directory is mapped inside the
 docker container as `/app`. And `/app` in the container is marked as the working directory for any command that is being
 executed, such as `mix phx.new`.
+
+Find and Replace `myapp` with the name of you app.
 
 **NOTE:** It is important to specify your app name through the `--app <name>` option, as Phoenix will otherwise name
 your app from the target directory passed in, which in our case is `.`

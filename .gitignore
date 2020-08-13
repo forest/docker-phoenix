@@ -30,3 +30,6 @@ erl_crash.dump
 
 # Node
 node_modules/
+
+# .env
+.env.*.local

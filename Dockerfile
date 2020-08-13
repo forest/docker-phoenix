@@ -1,19 +1,53 @@
-FROM elixir:1.10.3
+FROM elixir:1.10.4-alpine AS build
 
-RUN mix local.hex --force \
-  && mix archive.install --force hex phx_new 1.5.3 \
-  && apt-get update \
-  && curl -sL https://deb.nodesource.com/setup_12.x | bash \
-  && apt-get install -y apt-utils \
-  && apt-get install -y nodejs \
-  && apt-get install -y build-essential \
-  && apt-get install -y inotify-tools \
-  && mix local.rebar --force
+# set build ENV
+ENV MIX_ENV=prod \
+  LANG=C.UTF-8
 
-ENV APP_HOME /app
-RUN mkdir -p $APP_HOME
-WORKDIR $APP_HOME
+# install build dependencies
+RUN apk update && apk add --no-cache build-base npm git python
 
-EXPOSE 4000
+# prepare build dir
+WORKDIR /app
 
-CMD ["mix", "phx.server"]
+# install hex + rebar
+RUN mix local.hex --force && \
+  mix local.rebar --force
+
+# install mix dependencies
+COPY mix.exs mix.lock ./
+COPY config config
+RUN mix do deps.get, deps.compile
+
+# build assets
+COPY assets/package.json assets/package-lock.json ./assets/
+RUN npm --prefix assets ci --progress=false --no-audit --loglevel=error
+
+COPY priv priv
+COPY assets assets
+COPY lib lib
+RUN npm run --prefix assets deploy
+RUN mix phx.digest
+
+# compile and build release
+RUN mix do compile, release
+
+# prepare release image
+FROM alpine:3.9 AS app
+
+ENV LANG=C.UTF-8
+
+RUN apk update && apk add --no-cache openssl ncurses-libs
+
+WORKDIR /app
+
+RUN chown nobody:nobody /app
+
+USER nobody:nobody
+
+COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/myapp ./
+
+ENV HOME=/app
+
+ENTRYPOINT ["bin/myapp"]
+CMD ["start"]

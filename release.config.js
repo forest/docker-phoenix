@@ -5,6 +5,7 @@ const commitAnalyzerOptions = {
     { type: 'breaking', release: 'major' },
     { type: 'refactor', release: 'patch' },
     { type: 'config', release: 'patch' },
+    { scope: 'chore', release: false },
     { scope: 'no-release', release: false },
     { scope: 'test', release: false },
   ],
@@ -24,6 +25,8 @@ const releaseNotesGeneratorOptions = {
         commit.type = 'Bug Fixes';
       } else if (commit.type === 'refactor') {
         commit.type = 'Code Refactoring';
+      } else if (commit.type === 'chore') {
+        commit.type = 'Chores';
       } else if (commit.type === 'config') {
         commit.type = 'Config';
       } else if (commit.type === 'test') {
